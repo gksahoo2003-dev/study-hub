@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Goutam Study Hub</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f4f7fb;
+}
+
+header {
+    background: linear-gradient(45deg, #007bff, #00c6ff);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    background: #333;
+}
+
+nav button {
+    background: none;
+    border: none;
+    color: white;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+nav button:hover {
+    background: #555;
+}
+
+.section {
+    display: none;
+    padding: 20px;
+}
+
+.active {
+    display: block;
+}
+
+/* Routine */
+.task {
+    padding: 10px;
+    margin: 8px 0;
+    background: #eee;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.task.completed {
+    background: #28a745;
+    color: white;
+    text-decoration: line-through;
+}
+
+/* Notes */
+textarea {
+    width: 100%;
+    height: 150px;
+    padding: 10px;
+}
+
+/* PDF */
+embed {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+}
+
+/* Video */
+iframe {
+    width: 100%;
+    height: 350px;
+    border-radius: 10px;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <h1>📚 Goutam Study Hub</h1>
+</header>
+
+<nav>
+    <button onclick="showSection('routine')">Routine</button>
+    <button onclick="showSection('books')">Books</button>
+    <button onclick="showSection('notes')">Notes</button>
+    <button onclick="showSection('videos')">Videos</button>
+</nav>
+
+<!-- ROUTINE -->
+<div id="routine" class="section active">
+    <h2>✅ Daily Routine</h2>
+    <div id="taskList"></div>
+</div>
+
+<!-- BOOKS -->
+<div id="books" class="section">
+    <h2>📖 Python Book</h2>
+
+    <!-- IMPORTANT: same folder re pythonBOOK.pdf rakhiba -->
+    <embed src="pythonBOOK2pdf.pdf" type="application/pdf" width="100%" height="600px">
+</div>
+
+<!-- NOTES -->
+<div id="notes" class="section">
+    <h2>📝 My Notes</h2>
+    <textarea id="noteArea" placeholder="Write your notes..."></textarea>
+    <br><br>
+    <button onclick="saveNote()">Save Notes</button>
+</div>
+
+<!-- VIDEOS -->
+<div id="videos" class="section">
+    <h2>🎥 Python Video</h2>
+
+    <!-- Your YouTube Video -->
+    <iframe src="https://www.youtube.com/embed/_aWbUudZ5Yo"
+        allowfullscreen>
+    </iframe>
+</div>
+
+<script>
+
+// Navigation
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+// Routine Tasks (tumara pattern)
+const tasks = [
+    "04:00 AM – Exercise",
+    "05:00 AM – Bath + Meditation",
+    "06:00 AM – Chanting",
+    "07:00 AM – Python",
+    "09:15 AM – Excel",
+    "11:30 AM – Python Revision",
+    "04:00 PM – Rest / Walk",
+    "05:00 PM – Programming",
+    "07:00 PM – Excel Practice",
+    "10:30 PM – Sleep"
+];
+
+const taskList = document.getElementById("taskList");
+
+// Load saved status
+let saved = JSON.parse(localStorage.getItem("routineStatus")) || [];
+
+tasks.forEach((task, index) => {
+    let div = document.createElement("div");
+    div.className = "task";
+
+    let checked = saved[index] ? "checked" : "";
+    if (saved[index]) div.classList.add("completed");
+
+    div.innerHTML = `
+        <input type="checkbox" ${checked} onchange="toggleTask(${index}, this)">
+        ${task}
+    `;
+    taskList.appendChild(div);
+});
+
+// Toggle complete
+function toggleTask(index, el) {
+    let parent = el.parentElement;
+    parent.classList.toggle("completed");
+
+    saved[index] = el.checked;
+    localStorage.setItem("routineStatus", JSON.stringify(saved));
+}
+
+// Notes save
+function saveNote() {
+    localStorage.setItem("notes", document.getElementById("noteArea").value);
+    alert("Notes Saved ✅");
+}
+
+// Load notes
+document.getElementById("noteArea").value = localStorage.getItem("notes") || "";
+
+</script>
+
+</body>
+</html>
